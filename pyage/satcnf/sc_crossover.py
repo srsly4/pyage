@@ -25,11 +25,11 @@ class Crossover(AbstractCrossover):
         super(Crossover, self).__init__(CNFGenotype, size)
 
     def cross(self, p1, p2):
-        logger.debug("Crossing:\n{0}\nAND\n{1}".format(p1, p2))
+        # logger.debug("Crossing:\n{0}\nAND\n{1}".format(p1, p2))
         new_values = []
         curr_ndx = 0
-        switcher = 1
         while curr_ndx < len(p1.values):
-            new_values.append(p1.values[curr_ndx] if switcher == 1 else p2.values[curr_ndx])
+            new_values.append(p1.values[curr_ndx] if random.random() < 0.5 else p2.values[curr_ndx])
+            curr_ndx += 1
 
         return CNFGenotype(new_values)

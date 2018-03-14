@@ -21,10 +21,11 @@ class Mutation(AbstractMutation):
     def __init__(self, probability, evol_probability):
         super(Mutation, self).__init__(CNFGenotype, evol_probability)
         self.probability = probability
+        self.evol_probability = evol_probability
 
     def mutate(self, genotype):
         logger.debug("Mutating genotype: {0}".format(genotype))
-        for key, value in genotype.values.iteritems():
+        for key in xrange(0, len(genotype.values)):
             rand = random.random()
-            if rand < self.probability:
-                genotype.values[key] = 1 - value
+            if rand < self.evol_probability:
+                genotype.values[key] = 1 - genotype.values[key]

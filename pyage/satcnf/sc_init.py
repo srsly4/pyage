@@ -32,10 +32,16 @@ def root_agents_factory(count, type):
     return factory
 
 
-class SATCNFInitializer(object):
+class SATCNFInitializer(Operator):
+    def process(self, population):
+        values = self.__call__()
+        for i in xrange(len(values)):
+            population.append(CNFGenotype(values[i]))
+
     def __init__(self, values_nr, count, seed):
         self.values_nr = values_nr
         self.count = count
+        self.required_type = None
         random.seed(seed)
 
     def __call__(self):

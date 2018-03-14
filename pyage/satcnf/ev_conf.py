@@ -4,8 +4,8 @@ import os
 import math
 
 from pyage.core import address
+from pyage.core.agent.agent import generate_agents, Agent
 
-from pyage.core.agent.aggregate import AggregateAgent
 from pyage.core.emas import EmasService
 from pyage.core.locator import GridLocator
 from pyage.core.migration import ParentMigration
@@ -15,6 +15,7 @@ from pyage.core.stop_condition import StepLimitStopCondition
 from sc_init import EmasInitializer, SATCNFInitializer, root_agents_factory
 from sc_mutation import Mutation
 from sc_crossover import Crossover
+from sc_selection import TournamentSelection
 from sc_eval import SATEvaluation
 from naming_service import NamingService
 from cnf_loader import load_values
@@ -28,40 +29,31 @@ logger = logging.getLogger(__name__)
 #     [(1, 0), (0, 1), (1, 2)],  # a || ~b || c
 #     [(0, 4), (1, 5)],
 # ]
+# variables = 6
+# clauses = 5
 # values_nr = 6
 
 cnf, variables, clauses = load_values("data3.cnf")
 
-init_values = SATCNFInitializer(variables, 200, 'asdasdaga')()
-
-logger.info("Initial values:\n%s", "\n".join(map(str, init_values)))
+# init_values = SATCNFInitializer(variables, 10, 'nopeland')()
+#
+# logger.info("Initial values:\n%s", "\n".join(map(str, cnf)))
 
 
 agents_count = 2
-logger.debug("EMAS, %s agents", agents_count)
-agents = root_agents_factory(agents_count, AggregateAgent)
+# logger.debug("EMAS, %s agents", agents_count)
+# agents = root_agents_factory(agents_count, AggregateAgent)
+agents = generate_agents("agent", agents_count, Agent)
 
 stop_condition = lambda: StepLimitStopCondition(10000)
 
-agg_size = 40
-aggregated_agents = EmasInitializer(values=init_values, size=agg_size, energy=40)
-
-emas = EmasService
-
-minimal_energy = lambda: 10
-reproduction_minimum = lambda: 100
-migration_minimum = lambda: 120
-newborn_energy = lambda: 100
-transferred_energy = lambda: 40
-
-budget = 0
+operators = lambda: [SATEvaluation(cnf), TournamentSelection(size=20, tournament_size=20),
+                     Crossover(size=40),
+                     Mutation(probability=0.2, evol_probability=0.75)]
+initializer = lambda: SATCNFInitializer(variables, 250, 'wrt')
 
 
 def simple_cost_func(x): return abs(x)*10
-
-evaluation = lambda: SATEvaluation(cnf)
-crossover = lambda: Crossover(size=20)
-mutation = lambda: Mutation(probability=0.2, evol_probability=0.3)
 
 address_provider = address.SequenceAddressProvider
 

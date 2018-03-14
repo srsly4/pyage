@@ -17,12 +17,12 @@ class SATEvaluation(Operator):
         evaluated = 0.0
 
         for group in self.cnf_form:
-            # group_hits = 0
+            group_hits = 0
             for expected_val, index in group:
-                if expected_val == genotype.values[index]:
-                    # group_hits += 1
-                    evaluated += 1
-                    break
+                if expected_val == genotype.values[index]:  # that's an OR clausule hit
+                    group_hits += 1
+            if group_hits > 0:
+                evaluated += 1
             # evaluated += float(group_hits) / len(group)
 
         return evaluated
