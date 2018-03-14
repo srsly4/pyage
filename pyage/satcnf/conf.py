@@ -17,20 +17,22 @@ from sc_mutation import Mutation
 from sc_crossover import Crossover
 from sc_eval import SATEvaluation
 from naming_service import NamingService
+from cnf_loader import load_values
 
 logger = logging.getLogger(__name__)
 
-cnf = [
-    [(0, 0), (1, 2)],  # ~a || c
-    [(0, 0), (1, 2), (0, 4)],  # ~a || c || ~e
-    [(0, 1), (1, 2), (1, 3), (0, 4)],  # ~b || c || d || ~e
-    [(1, 0), (0, 1), (1, 2)],  # a || ~b || c
-    [(0, 4), (1, 5)],
-]
-values_nr = 6
+# cnf = [
+#     [(0, 0), (1, 2)],  # ~a || c
+#     [(0, 0), (1, 2), (0, 4)],  # ~a || c || ~e
+#     [(0, 1), (1, 2), (1, 3), (0, 4)],  # ~b || c || d || ~e
+#     [(1, 0), (0, 1), (1, 2)],  # a || ~b || c
+#     [(0, 4), (1, 5)],
+# ]
+# values_nr = 6
 
+cnf, variables, clauses = load_values("data.cnf")
 
-init_values = SATCNFInitializer(values_nr, 10, 'nopeland')()
+init_values = SATCNFInitializer(variables, 10, 'nopeland')()
 
 logger.info("Initial values:\n%s", "\n".join(map(str, init_values)))
 
@@ -58,7 +60,7 @@ budget = 0
 def simple_cost_func(x): return abs(x)*10
 
 evaluation = lambda: SATEvaluation(cnf)
-crossover = lambda: Crossover(size=30)
+crossover = lambda: Crossover(size=20)
 mutation = lambda: Mutation(probability=0.2, evol_probability=0.5)
 
 address_provider = address.SequenceAddressProvider
