@@ -15,14 +15,18 @@ class SATEvaluation(Operator):
 
     def evaluate(self, genotype):
         evaluated = 0.0
-
+        all_literals = 0
+        all_hits = 0.0
         for group in self.cnf_form:
             group_hits = 0
             for expected_val, index in group:
+                all_literals += 1
                 if expected_val == genotype.values[index]:  # that's an OR clausule hit
                     group_hits += 1
+                    all_hits += 1
             if group_hits > 0:
                 evaluated += 1
-            # evaluated += float(group_hits) / len(group)
 
+        evaluated += float(all_hits) / float(all_literals)
+        evaluated += random.random() * 0.01
         return evaluated

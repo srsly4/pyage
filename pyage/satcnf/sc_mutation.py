@@ -29,3 +29,15 @@ class Mutation(AbstractMutation):
             rand = random.random()
             if rand < self.evol_probability:
                 genotype.values[key] = 1 - genotype.values[key]
+
+
+class ShiftMutation(AbstractMutation):
+    def __init__(self, probability):
+        super(ShiftMutation, self).__init__(CNFGenotype, probability)
+        self.probability = probability
+
+    def mutate(self, genotype):
+        logger.debug("Mutating genotype: {0}".format(genotype))
+        old_values = list(genotype.values)
+        for key in xrange(0, len(genotype.values)):
+            genotype.values[key] = old_values[(key+1) % len(genotype.values)]

@@ -13,7 +13,7 @@ from pyage.core.stats.gnuplot import StepStatistics
 from pyage.core.stop_condition import StepLimitStopCondition
 
 from sc_init import EmasInitializer, SATCNFInitializer, root_agents_factory
-from sc_mutation import Mutation
+from sc_mutation import Mutation, ShiftMutation
 from sc_crossover import Crossover
 from sc_eval import SATEvaluation
 from naming_service import NamingService
@@ -30,9 +30,9 @@ logger = logging.getLogger(__name__)
 # ]
 # values_nr = 6
 
-cnf, variables, clauses = load_values("data3.cnf")
+cnf, variables, clauses = load_values("data_large.cnf")
 
-init_values = SATCNFInitializer(variables, 200, 'asdasdaga')()
+init_values = SATCNFInitializer(variables, 40, 'amazon')()
 
 logger.info("Initial values:\n%s", "\n".join(map(str, init_values)))
 
@@ -41,10 +41,10 @@ agents_count = 2
 logger.debug("EMAS, %s agents", agents_count)
 agents = root_agents_factory(agents_count, AggregateAgent)
 
-stop_condition = lambda: StepLimitStopCondition(10000)
+stop_condition = lambda: StepLimitStopCondition(8000)
 
-agg_size = 40
-aggregated_agents = EmasInitializer(values=init_values, size=agg_size, energy=40)
+agg_size = 50
+aggregated_agents = EmasInitializer(values=init_values, size=agg_size, energy=60)
 
 emas = EmasService
 
@@ -61,7 +61,7 @@ def simple_cost_func(x): return abs(x)*10
 
 evaluation = lambda: SATEvaluation(cnf)
 crossover = lambda: Crossover(size=20)
-mutation = lambda: Mutation(probability=0.2, evol_probability=0.3)
+mutation = lambda: ShiftMutation(probability=0.02)
 
 address_provider = address.SequenceAddressProvider
 

@@ -29,7 +29,8 @@ class Crossover(AbstractCrossover):
         new_values = []
         curr_ndx = 0
         while curr_ndx < len(p1.values):
-            new_values.append(p1.values[curr_ndx] if random.random() < 0.5 else p2.values[curr_ndx])
+            # new_values.append(p1.values[curr_ndx] if random.random() < 0.5 else p2.values[curr_ndx])
+            new_values.append(p1.values[curr_ndx]*p2.values[curr_ndx] if random.random() < 0.5 else min(1, p1.values[curr_ndx]+p2.values[curr_ndx]))
             curr_ndx += 1
 
         return CNFGenotype(new_values)

@@ -12,16 +12,18 @@ def load_values(file):
             if line[0] == 'c':
                 continue
             if line[0] == 'p':
-                problem_line = line.split(" ")
+                problem_line = line.split()
                 variables = int(problem_line[2])
                 clauses = int(problem_line[3])
                 continue
 
-            splitted = line.split(" ")
+            splitted = line.split()
             end_of_line = splitted[len(splitted) - 1]
             if end_of_line[0] == '0':
                 line_val = []
                 for num_str in splitted:
+                    if len(num_str) == 0:
+                        continue
                     num = int(num_str)
                     if num > 0 or num < 0:
                         ins_val = (1 if num > 0 else 0, abs(num)-1)

@@ -13,7 +13,7 @@ from pyage.core.stats.gnuplot import StepStatistics
 from pyage.core.stop_condition import StepLimitStopCondition
 
 from sc_init import EmasInitializer, SATCNFInitializer, root_agents_factory
-from sc_mutation import Mutation
+from sc_mutation import Mutation, ShiftMutation
 from sc_crossover import Crossover
 from sc_selection import TournamentSelection
 from sc_eval import SATEvaluation
@@ -33,7 +33,7 @@ logger = logging.getLogger(__name__)
 # clauses = 5
 # values_nr = 6
 
-cnf, variables, clauses = load_values("data3.cnf")
+cnf, variables, clauses = load_values("data_large.cnf")
 
 # init_values = SATCNFInitializer(variables, 10, 'nopeland')()
 #
@@ -45,12 +45,12 @@ agents_count = 2
 # agents = root_agents_factory(agents_count, AggregateAgent)
 agents = generate_agents("agent", agents_count, Agent)
 
-stop_condition = lambda: StepLimitStopCondition(10000)
+stop_condition = lambda: StepLimitStopCondition(2500)
 
-operators = lambda: [SATEvaluation(cnf), TournamentSelection(size=20, tournament_size=20),
-                     Crossover(size=40),
-                     Mutation(probability=0.2, evol_probability=0.75)]
-initializer = lambda: SATCNFInitializer(variables, 250, 'wrt')
+operators = lambda: [SATEvaluation(cnf), TournamentSelection(size=10, tournament_size=5),
+                     Crossover(size=12),
+                     ShiftMutation(probability=0.02)]
+initializer = lambda: SATCNFInitializer(variables, 50, 'nopeland')
 
 
 def simple_cost_func(x): return abs(x)*10
